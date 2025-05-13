@@ -1,25 +1,22 @@
 package com.example.dashboard.seeder;
 
-import com.example.dashboard.model.SalesData;
-import com.example.dashboard.repository.SalesDataRepository;
+import com.example.dashboard.model.Sale;
+import com.example.dashboard.repository.SaleRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 
-@Component
-public class DataSeeder implements CommandLineRunner {
+@Configuration
+public class DataSeeder {
 
-    private final SalesDataRepository repository;
-
-    public DataSeeder(SalesDataRepository repository) {
-        this.repository = repository;
-    }
-
-    @Override
-    public void run(String... args) {
-        repository.save(new SalesData(null, "Europe", "Product A", 100, 10000.0, LocalDate.of(2024, 12, 1)));
-        repository.save(new SalesData(null, "Asia", "Product B", 150, 12000.0, LocalDate.of(2024, 12, 5)));
-        repository.save(new SalesData(null, "North America", "Product C", 200, 18000.0, LocalDate.of(2024, 12, 10)));
+    @Bean
+    public CommandLineRunner loadData(SaleRepository repository) {
+        return args -> {
+            repository.save(new Sale(null, "Laptop", 10, 1500.0, "North", LocalDate.of(2024, 3, 10), false, "Top seller"));
+            repository.save(new Sale(null, "Monitor", 5, 700.0, "East", LocalDate.of(2024, 3, 12), true, "Check quality"));
+            repository.save(new Sale(null, "Keyboard", 20, 40.0, "West", LocalDate.of(2024, 3, 15), false, "Sold in bundle"));
+        };
     }
 }
