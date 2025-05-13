@@ -1,0 +1,300 @@
+/* Global Styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f0f4f8;
+  color: #444;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  text-align: center;
+  font-size: 36px;
+  color: #333;
+  margin-top: 40px;
+  font-weight: 700;
+}
+
+.dashboard {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.add-sale-button {
+  background: linear-gradient(145deg, #1a73e8, #124b9b);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  width: 200px;
+  text-align: center;
+}
+
+.add-sale-button:hover {
+  background: linear-gradient(145deg, #124b9b, #1a73e8);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.sale-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sale-table th,
+.sale-table td {
+  padding: 15px 20px;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.sale-table th {
+  background: linear-gradient(145deg, #e8f1fd, #d0e1f9);
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.sale-table td {
+  background-color: #fff;
+  font-size: 14px;
+  color: #555;
+}
+
+.sale-table td button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 10px;
+  width: 100px;
+}
+
+.sale-table td .edit-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.sale-table td .delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.sale-table td button:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.sale-table td .edit-btn:hover {
+  background-color: #45a049;
+}
+
+.sale-table td .delete-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* Modal Styles */
+.ReactModal__Overlay {
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.ReactModal__Content {
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 10px;
+  width: 400px;
+  padding: 30px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  animation: modalIn 0.3s ease-out;
+}
+
+@keyframes modalIn {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+form label {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+form input,
+form textarea {
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+form input:focus,
+form textarea:focus {
+  outline: none;
+  border-color: #1a73e8;
+  background-color: #fff;
+}
+
+form textarea {
+  resize: vertical;
+  height: 120px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+button[type="submit"] {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="button"] {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #124b9b;
+}
+
+button[type="button"]:hover {
+  background-color: #d32f2f;
+}
+
+/* Chart Styles */
+.chart-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container h2 {
+  text-align: center;
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* App Layout */
+.App {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+}
+
+.charts {
+  width: 40%;
+  margin: 2rem;
+  position: relative;
+  min-width: 320px;
+  max-width: 600px;
+}
+
+/* Enhanced Button Hover Effect */
+button[type="button"],
+button[type="submit"],
+.add-sale-button {
+  transition: transform 0.2s ease-in-out, background-color 0.3s ease;
+}
+
+button[type="button"]:hover,
+button[type="submit"]:hover,
+.add-sale-button:hover {
+  transform: translateY(-4px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 20px;
+  }
+
+  .add-sale-button,
+  button[type="button"],
+  button[type="submit"] {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  .charts {
+    width: 100%;
+    margin: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 28px;
+  }
+
+  .sale-table th,
+  .sale-table td {
+    padding: 10px;
+  }
+
+  .sale-table th {
+    font-size: 14px;
+  }
+
+  .sale-table td {
+    font-size: 12px;
+  }
+}
