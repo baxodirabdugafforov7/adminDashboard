@@ -66,7 +66,7 @@ A responsive business analytics dashboard built with React, featuring a sales ma
 4. Open your browser and navigate to:
 
    ```
-   http://localhost:3000
+   http://localhost:5173
    ```
 
    Your application should now be running locally!
