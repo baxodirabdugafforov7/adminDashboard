@@ -1,16 +1,9 @@
 import React from "react";
-import { deleteSale } from "../services/saleService";
 
-// Case-insensitive product name check before deletion
 const SaleTable = ({ sales, onDelete, onEdit }) => {
   const handleDelete = (id, productName) => {
-    const caseInsensitiveCheck = sales.some(
-      (sale) => sale.productName.toLowerCase() === productName.toLowerCase()
-    );
-    if (caseInsensitiveCheck) {
-      if (window.confirm(`Are you sure you want to delete ${productName}?`)) {
-        onDelete(id);
-      }
+    if (window.confirm(`Are you sure you want to delete ${productName}?`)) {
+      onDelete(id);
     }
   };
 
@@ -18,14 +11,14 @@ const SaleTable = ({ sales, onDelete, onEdit }) => {
     <table className="sale-table">
       <thead>
         <tr>
-          <th>Product</th>
-          <th>Quantity</th>
-          <th>Revenue</th>
-          <th>Region</th>
-          <th>Date</th>
-          <th>Flagged</th>
-          <th>Notes</th>
-          <th>Actions</th>
+          <th scope="col">Product</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Revenue</th>
+          <th scope="col">Region</th>
+          <th scope="col">Date</th>
+          <th scope="col">Flagged</th>
+          <th scope="col">Notes</th>
+          <th scope="col">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -39,10 +32,17 @@ const SaleTable = ({ sales, onDelete, onEdit }) => {
             <td>{sale.flagged ? "Yes" : "No"}</td>
             <td>{sale.notes}</td>
             <td>
-              <button onClick={() => onEdit(sale)} className="edit-btn">Edit</button>
+              <button
+                onClick={() => onEdit(sale)}
+                className="edit-btn"
+                aria-label={`Edit ${sale.productName}`}
+              >
+                Edit
+              </button>
               <button
                 onClick={() => handleDelete(sale.id, sale.productName)}
                 className="delete-btn"
+                aria-label={`Delete ${sale.productName}`}
               >
                 Delete
               </button>

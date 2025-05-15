@@ -1,24 +1,55 @@
 import React, { useState, useEffect } from "react";
-import { getAllSales, deleteSale } from "../services/saleService";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import SaleTable from "./SaleTable";
 import SaleForm from "./SaleForm";
-import ChartComponent from "./ChartComponent";
-import HorizontalBarChart from "./HorizontalBarChart";
 
-const Dashboard = () => {
+const Dashboard = ({onLogout}) => {
     const [sales, setSales] = useState([]);
     const [saleToEdit, setSaleToEdit] = useState(null);
     const [isFormVisible, setFormVisible] = useState(false);
-    const [chartData, setChartData] = useState(null); // State for chart data
+    const [chartData, setChartData] = useState(null);
+    const navigate = useNavigate();
 
-    // Fetch sales data and update chart data
     const fetchSales = async () => {
-        const data = await getAllSales();
-        setSales(data); // Update the sales state
-        updateChartData(data); // Update the chart data with the latest sales
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                navigate("/login");
+                return;
+            }
+
+            const response = await axios.get("http://localhost:8080/api/sales", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            setSales(response.data);
+            updateChartData(response.data);
+        } catch (err) {
+            if (err.response?.status === 401) {
+                localStorage.removeItem("token");
+                navigate("/login");
+            } else {
+                console.error("Failed to fetch sales:", err);
+            }
+        }
     };
 
-    // This updates chart data based on sales data
+    const deleteSaleById = async (id) => {
+        try {
+            const token = localStorage.getItem("token");
+            await axios.delete(`http://localhost:8080/api/sales/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+        } catch (err) {
+            console.error("Failed to delete sale:", err);
+        }
+    };
+
     const updateChartData = (data) => {
         const revenueByRegion = data.reduce((acc, sale) => {
             acc[sale.region] = (acc[sale.region] || 0) + sale.revenue;
@@ -46,8 +77,8 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
-        fetchSales(); // Fetch data when component is mounted
-    }, []); // Only fetch data once when the component is mounted
+        fetchSales();
+    }, []);
 
     const handleEdit = (sale) => {
         setSaleToEdit(sale);
@@ -55,16 +86,16 @@ const Dashboard = () => {
     };
 
     const handleDelete = async (id) => {
-        await deleteSale(id);
+        await deleteSaleById(id);
         const updatedSales = sales.filter((sale) => sale.id !== id);
-        setSales(updatedSales); // Update sales state after deletion
-        updateChartData(updatedSales); // Recalculate chart data after deletion
+        setSales(updatedSales);
+        updateChartData(updatedSales);
     };
 
     const handleFormSubmit = () => {
         setFormVisible(false);
         setSaleToEdit(null);
-        fetchSales(); // Refetch sales data to update everything (after adding or editing sale)
+        fetchSales();
     };
 
     const handleFormCancel = () => {
@@ -72,21 +103,60 @@ const Dashboard = () => {
         setSaleToEdit(null);
     };
 
-    // Handle the click event for the Update Charts button to refresh the page
-    const handleUpdateCharts = () => {
-        window.location.reload(); // Refresh the page
-    };
-
     return (
-        <div className="dashboard">
-            <h1>Business Analytics Dashboard</h1>
-            <button onClick={() => setFormVisible(true)} className="add-sale-button">
-                Add Sale
-            </button>
-            <button onClick={handleUpdateCharts} className="update-charts-button">
-                Update Charts
-            </button>
+        <div className="dashboard" style={{ padding: "20px" }}>
+            {/* Header with Logout */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <h1 style={{ margin: 0 }}>Business Analytics Dashboard</h1>
+            </div>
 
+            {/* Action Buttons */}
+            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+                <button
+                    onClick={() => setFormVisible(true)}
+                    style={{
+                        padding: "10px 20px",
+                        backgroundColor: "#28a745",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                    }}
+                >
+                    Add Sale
+                </button>
+                <button
+                    onClick={() => window.location.reload()}
+                    style={{
+                        padding: "10px 20px",
+                        backgroundColor: "#007bff",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                    }}
+                >
+                    Reload Charts
+                </button>
+
+                <button
+                    onClick={onLogout} // Just switch view without clearing token
+                    style={{
+                        padding: "8px 16px",
+                        backgroundColor: "#dc3545",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                    }}
+                >
+                    Logout
+                </button>
+
+
+            </div>
+
+            {/* Sale Form Modal */}
             <SaleForm
                 saleToEdit={saleToEdit}
                 isOpen={isFormVisible}
@@ -94,15 +164,11 @@ const Dashboard = () => {
                 onCancel={handleFormCancel}
             />
 
-            <SaleTable
-                sales={sales}
-                onDelete={handleDelete}
-                onEdit={handleEdit}
-            />
-
-    
+            {/* Sales Table */}
+            <SaleTable sales={sales} onDelete={handleDelete} onEdit={handleEdit} />
         </div>
     );
+
 };
 
 export default Dashboard;

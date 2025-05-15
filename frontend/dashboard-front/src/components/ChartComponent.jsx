@@ -11,6 +11,7 @@ import {
   Legend
 } from "chart.js";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -25,10 +26,21 @@ ChartJS.register(
 const ChartComponent = () => {
   const [chartData, setChartData] = useState(null);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const fetchSales = async () => {
     try {
-      const { data } = await axios.get("http://localhost:8081/api/sales");
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
+      const { data } = await axios.get("http://localhost:8080/api/sales", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const revenueByRegion = data.reduce((acc, sale) => {
         acc[sale.region] = (acc[sale.region] || 0) + sale.revenue;
@@ -54,14 +66,19 @@ const ChartComponent = () => {
         ],
       });
     } catch (err) {
-      setError("Failed to load sales data");
-      console.error(err);
+      if (err.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+      } else {
+        setError("Failed to load sales data");
+        console.error(err);
+      }
     }
   };
 
   useEffect(() => {
     fetchSales();
-  }, []); // Fetch data once on mount
+  }, []);
 
   const options = {
     responsive: true,

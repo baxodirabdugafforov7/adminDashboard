@@ -7,8 +7,9 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from "chart.js";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 ChartJS.register(
@@ -23,11 +24,20 @@ ChartJS.register(
 const HorizontalBarChart = () => {
   const [chartData, setChartData] = useState(null);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSales = async () => {
       try {
-        const { data } = await axios.get("http://localhost:8081/api/sales");
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+        const { data } = await axios.get("http://localhost:8080/api/sales", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
         const productNames = data.map((sale) => sale.productName);
         const quantities = data.map((sale) => sale.quantity);
 
@@ -44,13 +54,18 @@ const HorizontalBarChart = () => {
           ],
         });
       } catch (err) {
-        setError("Failed to load sales data");
-        console.error(err);
+        if (err.response?.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/login");
+        } else {
+          setError("Failed to load sales data");
+          console.error(err);
+        }
       }
     };
 
     fetchSales();
-  }, []);
+  }, [navigate]);
 
   const options = {
     indexAxis: "y",
